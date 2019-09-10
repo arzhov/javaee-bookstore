@@ -1,0 +1,1 @@
+<img src="<%=request.getContextPath()%>/images/java-duke-guitar.png" alt="Default Content" />
