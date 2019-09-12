@@ -4,13 +4,18 @@ package com.arzhov;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.arzhov.bookstore.ejb.BookService;
+import com.arzhov.bookstore.jpa.Book;
 
 
 @RequestScoped
@@ -24,44 +29,45 @@ public class BookResource {
 
 	@GET
 	public Response getAll() {
-		return Response.ok(bookService.findAll()).build();
+		return Response.ok(bookService.findRange(new int[] {0, 100})).build();
 	}
 
-/*	@GET
+	@GET
 	@Path("{id}")
-	public Response getTodo(@PathParam("id") Long id) {
-		Todo todo = todoDAO.findById(id);
+	public Response getBook(@PathParam("id") final Long id) {
+		final Book book = bookService.find(id);
 
-		return Response.ok(todo).build();
+		return Response.ok(book).build();
 	}
 
 	@PUT
 	@Path("{id}")
-	public Response update(@PathParam("id") Long id, Todo todo) {
-		Todo updateTodo = todoDAO.findById(id);
+	public Response update(@PathParam("id") final Long id, final Book book) {
+		final Book updateBook = bookService.find(id);
 
-		updateTodo.setTask(todo.getTask());
-		updateTodo.setDescription(todo.getDescription());
-		todoDAO.update(updateTodo);
+		updateBook.setTitle(book.getTitle());
+		updateBook.setPrice(book.getPrice());
+		updateBook.setIsbn(book.getIsbn());
+		bookService.edit(updateBook);
 
 		return Response.ok().build();
 	}
 
 	@POST
-	public Response create(Todo todo) {
-		todoDAO.create(todo);
+	public Response create(final Book book) {
+		bookService.create(book);
 		return Response.ok().build();
 	}
 
 	@DELETE
 	@Path("{id}")
-	public Response delete(@PathParam("id") Long id) {
-		Todo getTodo = todoDAO.findById(id);
+	public Response delete(@PathParam("id") final Long id) {
+		final Book book = bookService.find(id);
 
-		todoDAO.delete(getTodo);
+		bookService.remove(book);
 
 		return Response.ok().build();
-	}*/
+	}
 
 }
 

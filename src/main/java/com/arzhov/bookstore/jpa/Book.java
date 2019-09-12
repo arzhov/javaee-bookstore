@@ -13,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -24,7 +28,15 @@ import com.arzhov.bookstore.jpa.validation.ISBNConstraint;
 
 @Entity
 @Table(name = "BOOKS")
+@NamedQueries({
+        @NamedQuery(name = Book.QUERY_ALL_BOOKS_AUTHORS,
+                query = "select b from Book b join fetch b.authors a where a.id = :id")
+})
+@NamedEntityGraph(name = Book.GRAPH_BOOKS_AUTHORS, attributeNodes = @NamedAttributeNode("authors"))
 public class Book implements Serializable {
+
+    public static final String QUERY_ALL_BOOKS_AUTHORS = "query.all.Book.authors";
+    public static final String GRAPH_BOOKS_AUTHORS = "graph.Book.authors";
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,7 +52,7 @@ public class Book implements Serializable {
     @NotEmpty
     @ISBNConstraint
     private String isbn;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
     		name = "AUTHOR_BOOK",
     joinColumns = {
@@ -54,7 +66,7 @@ public class Book implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -69,11 +81,11 @@ public class Book implements Serializable {
     /**
      * @param title - between 5 and 240 symbols
      */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(final BigDecimal price) {
         this.price = price;
     }
 
@@ -87,7 +99,7 @@ public class Book implements Serializable {
      * @see ISBNConstraint
      * @param isbn
      */
-    public void setIsbn(String isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -95,7 +107,7 @@ public class Book implements Serializable {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
+    public void setAuthors(final Set<Author> authors) {
         this.authors = authors;
     }
 
@@ -108,7 +120,7 @@ public class Book implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -118,15 +130,10 @@ public class Book implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Book other = (Book) obj;
+        final Book other = (Book) obj;
         if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        return true;
+            return other.id == null;
+        } else return id.equals(other.id);
     }
 
     @Override

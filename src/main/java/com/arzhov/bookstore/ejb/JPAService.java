@@ -3,53 +3,46 @@ package com.arzhov.bookstore.ejb;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class JPAService<T> {
-    private Class<T> entityClass;
+    private final Class<T> entityClass;
 
-    public JPAService(Class<T> entityClass) {
+    public JPAService(final Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
     protected abstract EntityManager getEntityManager();
 
-    public void create(T entity) {
+    public void create(final T entity) {
         getEntityManager().persist(entity);
     }
 
-    public void edit(T entity) {
+    public void edit(final T entity) {
         getEntityManager().merge(entity);
     }
 
-    public void remove(T entity) {
+    public void remove(final T entity) {
         getEntityManager().remove(entity);
     }
 
-    public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
-    }
+    public abstract T find(Long id);
     
 	public List<T> findAll() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        final javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
         return getEntityManager().createQuery(cq).getResultList();
     }
 
-    public List<T> findRange(int[] range) {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0]);
-        q.setFirstResult(range[0]);
-        return q.getResultList();
-    }
+    public abstract List<T> findRange(int[] range);
 
     public int count() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
+        final CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        final Root<T> rt = cq.from(entityClass);
         cq.select(getEntityManager().getCriteriaBuilder().count(rt));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
+        final javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }            
 }

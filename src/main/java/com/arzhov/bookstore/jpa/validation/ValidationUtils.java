@@ -12,7 +12,7 @@ public class ValidationUtils {
     
     protected Validator validator;
 
-    public ValidationUtils(Validator validator) {
+    public ValidationUtils(final Validator validator) {
         this.validator = validator;
     }
             
@@ -22,12 +22,12 @@ public class ValidationUtils {
      * @param message - The ValidationMessage object
      */   
     @SuppressWarnings("unchecked")
-	public void addValidationMessage(HttpServletRequest request, ValidationMessage message) {
-        Object validationMessagesObject = request.getAttribute(VALIDATION_MESSAGES_PARAM);
+	public void addValidationMessage(final HttpServletRequest request, final ValidationMessage message) {
+        final Object validationMessagesObject = request.getAttribute(VALIDATION_MESSAGES_PARAM);
         
-        Set<ValidationMessage> validationMessages = null;
+        final Set<ValidationMessage> validationMessages;
         if (validationMessagesObject == null) {
-            validationMessages = new HashSet<ValidationMessage>();
+            validationMessages = new HashSet<>();
         } else if (validationMessagesObject instanceof Set){
             validationMessages = (Set<ValidationMessage>) validationMessagesObject;
         } else {
@@ -38,14 +38,14 @@ public class ValidationUtils {
         request.setAttribute(VALIDATION_MESSAGES_PARAM, validationMessages);
     }
 
-    public boolean areThereValidationMessages(HttpServletRequest request) {
+    public boolean areThereValidationMessages(final HttpServletRequest request) {
         return request.getAttribute(VALIDATION_MESSAGES_PARAM) != null;
     }
     
-    public <T> void  validateObject(HttpServletRequest request, T t) {
-         Set<ConstraintViolation<T>> violations = validator.validate(t);         
+    public <T> void  validateObject(final HttpServletRequest request, final T t) {
+         final Set<ConstraintViolation<T>> violations = validator.validate(t);
         if (violations != null && violations.size() > 0) {            
-            for (ConstraintViolation<T> violation : violations) {                
+            for (final ConstraintViolation<T> violation : violations) {
                 addValidationMessage(request, new ValidationMessage(violation.getPropertyPath().toString(), violation.getMessage()));
             }                        
         }

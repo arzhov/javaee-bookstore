@@ -16,9 +16,9 @@ public class DeleteBookServlet extends AbstractBookServlet {
     private static final Logger log = Logger.getLogger(DeleteBookServlet.class.getName());
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
-        Book book = getBookFromParams(request);
+        final Book book = getBookFromParams(request);
         bookEJB.remove(getBookFromParams(request));        
         log.info(book.toString());        
         request.setAttribute("allBooks", bookEJB.findAll());        

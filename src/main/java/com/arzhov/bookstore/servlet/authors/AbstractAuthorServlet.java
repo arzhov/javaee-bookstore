@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.arzhov.bookstore.ejb.AuthorService;
 import com.arzhov.bookstore.ejb.BookService;
 import com.arzhov.bookstore.jpa.Author;
-import com.arzhov.bookstore.jpa.Book;
 import com.arzhov.bookstore.jpa.validation.ValidationMessage;
 import com.arzhov.bookstore.jpa.validation.ValidationUtils;
 
@@ -36,16 +35,16 @@ public abstract class AbstractAuthorServlet extends HttpServlet {
     @Inject
     protected ValidationUtils validationUtils;
 
-    protected Author getAuthorFromRequestParameters(HttpServletRequest request) {
-        Author author = new Author();
+    protected Author getAuthorFromRequestParameters(final HttpServletRequest request) {
+        final Author author = new Author();
         author.setId(getAuthorIdFromRequest(request));
         author.setFirstName(request.getParameter(FIRST_NAME_PARAM));
         author.setLastName(request.getParameter(LAST_NAME_PARAM));
 
         final String[] selectedBooksIds = request.getParameterValues(AUTHORED_BOOKS_PARAM);
         if (selectedBooksIds != null && selectedBooksIds.length > 0) {            
-            author.setAuthoredBooks(new HashSet<Book>());
-            for (String bookId : selectedBooksIds) {
+            author.setAuthoredBooks(new HashSet<>());
+            for (final String bookId : selectedBooksIds) {
                 author.getAuthoredBooks().add(bookEJB.find(Long.valueOf(bookId)));
             }            
         }
@@ -56,8 +55,8 @@ public abstract class AbstractAuthorServlet extends HttpServlet {
      * @param request - HttpServletRequest which is supposed to has the "id" parameter
      * @return The Long value of a request parameter "id"
      */
-    protected Long getAuthorIdFromRequest(HttpServletRequest request) {
-        String idValue = request.getParameter("id");
+    protected Long getAuthorIdFromRequest(final HttpServletRequest request) {
+        final String idValue = request.getParameter("id");
         return idValue != null && !idValue.isEmpty() ? Long.valueOf(idValue) : null;
     }
   
@@ -66,33 +65,33 @@ public abstract class AbstractAuthorServlet extends HttpServlet {
      * @param request - The current request object
      * @param message - The ValidationMessage object
      */    
-    protected void addValidationMessage(HttpServletRequest request, ValidationMessage message) {
+    protected void addValidationMessage(final HttpServletRequest request, final ValidationMessage message) {
         validationUtils.addValidationMessage(request, message);
     }
 
-    protected boolean checkForValidationMessages(HttpServletRequest request) {
+    protected boolean checkForValidationMessages(final HttpServletRequest request) {
         return validationUtils.areThereValidationMessages(request);
     }
 
-    protected void proceedForEditing(HttpServletRequest request, HttpServletResponse response, String fallbackPage) throws ServletException, IOException {
+    protected void proceedForEditing(final HttpServletRequest request, final HttpServletResponse response, final String fallbackPage) throws ServletException, IOException {
         request.setAttribute(ALL_BOOKS_PARAM, bookEJB.findAll());
-        Author author = getAuthorFromRequestParameters(request);
+        final Author author = getAuthorFromRequestParameters(request);
         request.setAttribute(AUTHOR_PARAM, author);
         request.getRequestDispatcher(fallbackPage).forward(request, response);
     }
 
-    protected void validateAuthor(HttpServletRequest request) {
-        Author author = getAuthorFromRequestParameters(request);        
+    protected void validateAuthor(final HttpServletRequest request) {
+        final Author author = getAuthorFromRequestParameters(request);
         validationUtils.validateObject(request, author);
     }
 
-    protected void editAuthor(HttpServletRequest request) throws IOException {
-        Author author = getAuthorFromRequestParameters(request);
+    protected void editAuthor(final HttpServletRequest request) {
+        final Author author = getAuthorFromRequestParameters(request);
         authorEJB.edit(author);
     }
 
-    protected void createAuthor(HttpServletRequest request) {
-        Author author = getAuthorFromRequestParameters(request);
+    protected void createAuthor(final HttpServletRequest request) {
+        final Author author = getAuthorFromRequestParameters(request);
         authorEJB.create(author);
     }
 }

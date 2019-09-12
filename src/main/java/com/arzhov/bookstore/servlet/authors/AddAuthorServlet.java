@@ -12,7 +12,7 @@ public class AddAuthorServlet extends AbstractAuthorServlet {
     private static final long serialVersionUID = 8202293596281872305L;   
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {                
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         
         validateAuthor(request);                
         if (checkForValidationMessages(request)) {
@@ -24,7 +24,7 @@ public class AddAuthorServlet extends AbstractAuthorServlet {
     }
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("allBooks", bookEJB.findAll());
         request.getRequestDispatcher("/authors/add.jsp").forward(request, response);
     }

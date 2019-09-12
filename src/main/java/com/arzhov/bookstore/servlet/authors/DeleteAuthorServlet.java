@@ -15,7 +15,7 @@ public class DeleteAuthorServlet extends AbstractAuthorServlet {
     private static final Logger log = Logger.getLogger(DeleteAuthorServlet.class.getName());
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         log.info(getAuthorFromRequestParameters(request).toString());
         authorEJB.remove(getAuthorFromRequestParameters(request));
         request.setAttribute("allAuthors", authorEJB.findAll());

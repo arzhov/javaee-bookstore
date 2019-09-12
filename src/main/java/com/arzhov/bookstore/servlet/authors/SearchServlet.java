@@ -2,6 +2,7 @@ package com.arzhov.bookstore.servlet.authors;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,13 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.arzhov.bookstore.ejb.AuthorService;
-
-//import com.jee.tutorial.bookstore.jpa.Author;
-//import java.util.List;
-//import java.util.Enumeration;
-//import com.jee.tutorial.bookstore.jpa.Author;
-
+import com.arzhov.bookstore.jpa.Author;
 
 /**
  * Servlet implementation class SearchServlet
@@ -25,40 +20,31 @@ public class SearchServlet extends AbstractAuthorServlet {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * @see HttpServlet#HttpServlet()
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	public SearchServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doGet(final HttpServletRequest request,
+	                     final HttpServletResponse response) throws ServletException, IOException {
 		try {
-			PrintWriter writer = response.getWriter();
-			writer.print("Post method of SearchServlet");
+			final PrintWriter writer = response.getWriter();
+			writer.print("Use Post method of SearchServlet");
 			writer.close();
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			ioe.printStackTrace();
 		}
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(final HttpServletRequest request,
+	                      final HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String authorName = request.getParameter("searchCriteria");
-		authorEJB = new AuthorService();
-		authorEJB.findByName(authorName); 
+		final String authorName = request.getParameter("searchCriteria");
+		final List<Author> findAuthors = authorEJB.findByName(authorName);
+
+		request.setAttribute("allAuthors", findAuthors);
+		request.getRequestDispatcher("/authors/findAuthors.jsp").forward(request, response);
 
 	}
 

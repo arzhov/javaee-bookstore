@@ -14,7 +14,7 @@ public class AddBookServlet extends AbstractBookServlet {
     private static final long serialVersionUID = 1L;	       
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {                       
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         validateBook(request);
         if (checkForValidationMessages(request)) {
             processForEditing(request, response, "/books/add.jsp");
@@ -25,13 +25,13 @@ public class AddBookServlet extends AbstractBookServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("allAuthors", authorEJB.findAll());        
         request.getRequestDispatcher("/books/add.jsp").forward(request, response);
     }
 
-    private void createBook(HttpServletRequest request) {
-        Book book = getBookFromParams(request);
+    private void createBook(final HttpServletRequest request) {
+        final Book book = getBookFromParams(request);
         bookEJB.create(book);
     }
 }

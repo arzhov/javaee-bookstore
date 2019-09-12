@@ -50,7 +50,7 @@ public abstract class PaginationServlet extends HttpServlet {
     protected abstract String getJSPPageName();
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final int pageNumber = getPageNumber(request);
         final int pageSize = getPageSize(request);     
         
@@ -58,8 +58,8 @@ public abstract class PaginationServlet extends HttpServlet {
         request.setAttribute(PAGE_NUMBER_PARAM, pageNumber);
         request.setAttribute(PAGE_TOTAL_NUMBER_PARAM, getJPAService().count());        
 
-        int[] range = {(pageNumber - 1) * pageSize, pageNumber * pageSize};
-        List<?> resultList = getJPAService().findRange(range);
+        final int[] range = {(pageNumber - 1) * pageSize, pageNumber * pageSize};
+        final List<?> resultList = getJPAService().findRange(range);
 
         request.setAttribute(getCollectionName(), resultList);
         request.getRequestDispatcher(getJSPPageName()).forward(request, response);
@@ -70,11 +70,11 @@ public abstract class PaginationServlet extends HttpServlet {
      * @return the Integer value of page.number request parameter
      * @throws NumberFormatException if the requets paramete page.number is illegal number
      */
-    private int getPageNumber(HttpServletRequest request) {
+    private int getPageNumber(final HttpServletRequest request) {
         int pageNumber = 1;
-        String pageNumberRequestParameter = request.getParameter(PAGE_NUMBER_PARAM);
+        final String pageNumberRequestParameter = request.getParameter(PAGE_NUMBER_PARAM);
         if (!StringUtils.isBlank(pageNumberRequestParameter)) {
-            pageNumber = Integer.valueOf(pageNumberRequestParameter);
+            pageNumber = Integer.parseInt(pageNumberRequestParameter);
         }        
         return pageNumber;            
     }
@@ -84,11 +84,11 @@ public abstract class PaginationServlet extends HttpServlet {
      * @return the Integer value of page.size request parameter if provided; the value of "DEFAULT_PAGE_SIZE" init parameter
      * @throws NumberFormatException if the requets paramete page.size is illegal number
      */
-    private int getPageSize(HttpServletRequest request) {                                                
-        Integer cachedPageSize = getCachedPageSize(request.getSession());
-        String pageSizeRequestParameter = request.getParameter(getPageSizeParameterName());
+    private int getPageSize(final HttpServletRequest request) {
+        final Integer cachedPageSize = getCachedPageSize(request.getSession());
+        final String pageSizeRequestParameter = request.getParameter(getPageSizeParameterName());
         if (!StringUtils.isBlank(pageSizeRequestParameter)) {
-            final Integer requestPageSize = Integer.valueOf(pageSizeRequestParameter);
+            final int requestPageSize = Integer.parseInt(pageSizeRequestParameter);
             cachePageSize(request.getSession(), requestPageSize);
             return requestPageSize;
         } else if (cachedPageSize != null){
@@ -98,19 +98,19 @@ public abstract class PaginationServlet extends HttpServlet {
         return DEFAULT_PAGE_SIZE;            
     }    
     
-    private Integer getCachedPageSize(HttpSession session) {
-        Object cachedPageSize = session.getAttribute(getPageSizeParameterName());
+    private Integer getCachedPageSize(final HttpSession session) {
+        final Object cachedPageSize = session.getAttribute(getPageSizeParameterName());
         if (cachedPageSize != null) {
             try {
                 return Integer.valueOf(cachedPageSize.toString());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 super.log("NON INTEGER VALUE STORED IN SESSION'S CACHE", e);                
             } 
         }
         return null;
     }
     
-    private void cachePageSize(HttpSession session, int pageSize) {
+    private void cachePageSize(final HttpSession session, final int pageSize) {
         session.setAttribute(getPageSizeParameterName(), pageSize);
     }  
 }

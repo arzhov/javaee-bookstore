@@ -17,8 +17,8 @@ public class ValitatorProvider {
 	@Produces @JPAValidator
 	public Validator getValidator() {		
 		if (validator == null) {
-			HibernateValidatorConfiguration configuration = Validation.byProvider( HibernateValidator.class ).configure();		
-			ValidatorFactory validationFactory = configuration.buildValidatorFactory();
+			final HibernateValidatorConfiguration configuration = Validation.byProvider( HibernateValidator.class ).configure();
+			final ValidatorFactory validationFactory = configuration.buildValidatorFactory();
 			validator = validationFactory.getValidator();
 		}
 		return validator;		

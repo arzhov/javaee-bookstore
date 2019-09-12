@@ -1,12 +1,14 @@
 package com.arzhov.bookstore.jpa.validation;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class ValidationMessage {
-    private String fieldName;
-    private String message;
+    private final String fieldName;
+    private final String message;
 
-    public ValidationMessage(String fieldName, String message) {
+    public ValidationMessage(final String fieldName, final String message) {
         if (StringUtils.isBlank(message)) {
             throw new IllegalArgumentException("The message cannot be empty");
         }       
@@ -31,7 +33,7 @@ public class ValidationMessage {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -39,12 +41,9 @@ public class ValidationMessage {
             return false;
         }
         final ValidationMessage other = (ValidationMessage) obj;
-        if ((this.fieldName == null) ? (other.fieldName != null) : !this.fieldName.equals(other.fieldName)) {
+        if (!Objects.equals(this.fieldName, other.fieldName)) {
             return false;
         }
-        if ((this.message == null) ? (other.message != null) : !this.message.equals(other.message)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.message, other.message);
     }        
 }

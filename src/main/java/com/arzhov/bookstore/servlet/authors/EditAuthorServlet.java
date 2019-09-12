@@ -14,15 +14,15 @@ public class EditAuthorServlet extends AbstractAuthorServlet {
     private static final long serialVersionUID = 1L;    
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Author author = authorEJB.find(getAuthorIdFromRequest(request));
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        final Author author = authorEJB.find(getAuthorIdFromRequest(request));
         request.setAttribute("author", author);   
         request.setAttribute("allBooks", bookEJB.findAll());
         request.getRequestDispatcher("/authors/edit.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         validateAuthor(request);                
         if (checkForValidationMessages(request)) {
             proceedForEditing(request, response, "/authors/edit.jsp");
